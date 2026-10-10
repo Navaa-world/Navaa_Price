@@ -1,0 +1,430 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navaa Token Calculator</title>
+  <meta name="theme-color" content="#101827" />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #101827;
+      color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 22px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 470px;
+      background: #182337;
+      border: 1px solid #30405a;
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 20px 60px #0005;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #101827;
+      background: #7cf0b2;
+    }
+
+    h1 { font-size: 23px; margin: 0 0 6px; }
+    .muted { color: #a6b3c8; font-size: 14px; }
+
+    .network {
+      display: inline-block;
+      background: #263b35;
+      color: #8ff0b8;
+      padding: 7px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+
+    button, input { font: inherit; }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      background: #7cf0b2;
+      color: #10251b;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: .65; cursor: wait; }
+
+    .wallet {
+      background: #223047;
+      padding: 15px;
+      border-radius: 14px;
+      margin: 15px 0 22px;
+      overflow-wrap: anywhere;
+    }
+
+    .wallet-address {
+      color: #7cf0b2;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .label {
+      display: block;
+      color: #b8c4d7;
+      font-size: 13px;
+      margin: 18px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      background: #101827;
+      color: white;
+      border: 1px solid #3b4a61;
+      border-radius: 12px;
+      padding: 15px;
+      outline: none;
+    }
+
+    input:focus { border-color: #7cf0b2; }
+
+    .result {
+      background: #223047;
+      border-radius: 15px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .amount {
+      font-size: 29px;
+      font-weight: bold;
+      color: #7cf0b2;
+      margin-top: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .small {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #a6b3c8;
+      margin-top: 20px;
+    }
+
+    .status {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin-top: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    a { color: #7cf0b2; }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header class="header">
+      <div class="logo">N</div>
+      <div>
+        <h1>Navaa Token</h1>
+        <div class="muted">Token Calculator & Wallet</div>
+      </div>
+    </header>
+
+    <div class="network">● Polygon Network</div>
+
+    <button id="connectBtn">Connect Wallet</button>
+
+    <section class="wallet">
+      <div class="muted">Wallet address</div>
+      <div id="walletAddress" class="wallet-address">
+        Wallet not connected
+      </div>
+
+      <div class="muted" style="margin-top:16px">
+        Your NAVAA balance
+      </div>
+      <div id="walletBalance" class="amount">— NAVAA</div>
+
+      <div class="muted" style="margin-top:8px">
+        Estimated value: <strong id="walletValue">—</strong>
+      </div>
+    </section>
+
+    <label class="label" for="tokenInput">Enter NAVAA amount</label>
+    <input id="tokenInput" type="number" min="0" step="any"
+      placeholder="e.g. 100" value="100" />
+
+    <div class="result">
+      <div class="muted">Estimated INR value</div>
+      <div id="inrResult" class="amount">₹10</div>
+      <div class="muted" style="margin-top:10px">
+        10 NAVAA = ₹1
+      </div>
+    </div>
+
+    <label class="label" for="inrInput">Enter INR amount</label>
+    <input id="inrInput" type="number" min="0" step="any"
+      placeholder="e.g. 100" value="10" />
+
+    <div class="result">
+      <div class="muted">Equivalent NAVAA</div>
+      <div id="tokenResult" class="amount">100 NAVAA</div>
+    </div>
+
+    <div id="status" class="status" role="status">
+      Calculator ready. Connect your Polygon wallet to read your balance.
+    </div>
+
+    <p class="small">
+      This calculator uses a manually configured rate of 10 NAVAA = ₹1.
+      This is not a live market price or a promise that tokens can be
+      redeemed for INR. Wallet balance is read from the configured
+      token contract. No transactions are performed by this page.
+      Never enter your seed phrase or private key on a website.
+    </p>
+
+    <p class="small">
+      Token contract:
+      <a id="contractLink" target="_blank" rel="noopener noreferrer">
+        View on PolygonScan
+      </a>
+    </p>
+  </main>
+
+  <script>
+    const TOKEN_ADDRESS =
+      "0x82dba663278ADF0c398c1795a31760c7a76CA932";
+
+    const POLYGON_CHAIN_ID = "0x89";
+    const RPC_URL = "https://polygon-rpc.com";
+    const RATE = 10; // 10 NAVAA = ₹1
+
+    const $ = (id) => document.getElementById(id);
+
+    $("contractLink").href =
+      "https://polygonscan.com/token/" + TOKEN_ADDRESS;
+
+    function formatAmount(value) {
+      if (!Number.isFinite(value)) return "Invalid amount";
+      return value.toLocaleString("en-IN", {
+        maximumFractionDigits: 8
+      });
+    }
+
+    function updateTokenCalculator() {
+      const raw = $("tokenInput").value;
+      const amount = Number(raw);
+
+      if (raw.trim() === "" || !Number.isFinite(amount) || amount < 0) {
+        $("inrResult").textContent = "Enter a valid amount";
+        return;
+      }
+
+      $("inrResult").textContent = "₹" + formatAmount(amount / RATE);
+    }
+
+    function updateInrCalculator() {
+      const raw = $("inrInput").value;
+      const amount = Number(raw);
+
+      if (raw.trim() === "" || !Number.isFinite(amount) || amount < 0) {
+        $("tokenResult").textContent = "Enter a valid amount";
+        return;
+      }
+
+      $("tokenResult").textContent =
+        formatAmount(amount * RATE) + " NAVAA";
+    }
+
+    $("tokenInput").addEventListener("input", updateTokenCalculator);
+    $("inrInput").addEventListener("input", updateInrCalculator);
+
+    function setStatus(message) {
+      $("status").textContent = message;
+    }
+
+    async function rpc(method, params) {
+      const response = await fetch(RPC_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method,
+          params
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Polygon RPC request failed.");
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message || "Blockchain request failed.");
+      }
+
+      return data.result;
+    }
+
+    async function readTokenBalance(address) {
+      // ERC-20 balanceOf(address) function selector
+      const balanceSelector = "70a08231";
+      const addressArg = address.toLowerCase().replace("0x", "")
+        .padStart(64, "0");
+
+      const balanceHex = await rpc("eth_call", [{
+        to: TOKEN_ADDRESS,
+        data: "0x" + balanceSelector + addressArg
+      }, "latest"]);
+
+      // ERC-20 decimals() function selector
+      const decimalsHex = await rpc("eth_call", [{
+        to: TOKEN_ADDRESS,
+        data: "0x313ce567"
+      }, "latest"]);
+
+      if (!balanceHex || balanceHex === "0x" ||
+          !decimalsHex || decimalsHex === "0x") {
+        throw new Error(
+          "Token contract did not return a valid balance or decimals."
+        );
+      }
+
+      const rawBalance = BigInt(balanceHex);
+      const decimals = Number(BigInt(decimalsHex));
+
+      if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
+        throw new Error("Invalid token decimals returned by contract.");
+      }
+
+      // Format token units without losing precision in the displayed balance.
+      const digits = rawBalance.toString().padStart(decimals + 1, "0");
+      let formatted;
+
+      if (decimals === 0) {
+        formatted = digits;
+      } else {
+        const whole = digits.slice(0, -decimals);
+        const fraction = digits.slice(-decimals).replace(/0+$/, "");
+        formatted = fraction ? whole + "." + fraction : whole;
+      }
+
+      return {
+        formatted,
+        numeric: Number(formatted)
+      };
+    }
+
+    async function connectWallet() {
+      if (!window.ethereum) {
+        setStatus(
+          "Wallet not found. Install MetaMask, or open this website " +
+          "inside your wallet app's browser."
+        );
+        return;
+      }
+
+      $("connectBtn").disabled = true;
+      setStatus("Connecting wallet...");
+
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts"
+        });
+
+        if (!accounts || !accounts.length) {
+          throw new Error("No wallet account was selected.");
+        }
+
+        let chainId = await window.ethereum.request({
+          method: "eth_chainId"
+        });
+
+        if (chainId.toLowerCase() !== POLYGON_CHAIN_ID) {
+          try {
+            await window.ethereum.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: POLYGON_CHAIN_ID }]
+            });
+          } catch (switchError) {
+            if (switchError.code === 4902) {
+              throw new Error(
+                "Polygon network is not configured in your wallet. " +
+                "Add Polygon Mainnet, then try again."
+              );
+            }
+            throw switchError;
+          }
+
+          chainId = await window.ethereum.request({
+            method: "eth_chainId"
+          });
+        }
+
+        if (chainId.toLowerCase() !== POLYGON_CHAIN_ID) {
+          throw new Error("Please switch your wallet to Polygon Mainnet.");
+        }
+
+        const address = accounts[0];
+        $("walletAddress").textContent =
+          address.slice(0, 8) + "..." + address.slice(-6);
+
+        setStatus("Connected. Reading NAVAA balance from Polygon...");
+
+        const balance = await readTokenBalance(address);
+
+        $("walletBalance").textContent = balance.formatted + " NAVAA";
+        $("walletValue").textContent =
+          "₹" + formatAmount(balance.numeric / RATE);
+
+        setStatus(
+          "Balance loaded from the configured contract on Polygon."
+        );
+      } catch (error) {
+        setStatus("Could not connect/read balance: " +
+          (error.message || "Unknown error"));
+      } finally {
+        $("connectBtn").disabled = false;
+      }
+    }
+
+    $("connectBtn").addEventListener("click", connectWallet);
+
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", () => location.reload());
+      window.ethereum.on("chainChanged", () => location.reload());
+    }
+
+    updateTokenCalculator();
+    updateInrCalculator();
+  </script>
+</body>
+</html>
